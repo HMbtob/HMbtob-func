@@ -74,7 +74,6 @@ module.exports = app => {
         const crFunc = async () => {
           //  셀렉터배열로 돌면서 요소 추가
           for (let selector in selectors) {
-            console.log(selector);
             if (selector != "thumbNail" && selector != "descrip") {
               result = await page.$eval(
                 selectors[selector],
