@@ -95,23 +95,29 @@ module.exports = app => {
               // 파이어베이스에 썸넬 저장
               var storage = await firebase.storage();
 
-              const saveTheImg = async selec => {
+              const saveTheImg = async selector => {
+                let fileName = elemTexts["title"];
+                fileName = fileName.replace(/(\r\n\t|\n|\r\t)/gm, "");
+                fileName = fileName.replace(/\//g, "l");
+                fileName = fileName.replace(/\:/g, "대");
+                fileName = fileName.replace(/[<>\:\*\"\/\\\?\|]/gi);
+
                 await storage
-                  .ref(`images/space${selec}.jpg`)
+                  .ref(`images/${selector}/${fileName}.jpg`)
                   .put(new Uint8Array(imgResult.data), {
                     contentType: "image/jpeg",
                   })
-                  .catch(e => console.log(e));
+                  .catch(e => {
+                    browser.close(), res.end(), console.log(e);
+                  });
 
                 result = await storage
-                  .ref(`images/space${selec}.jpg`)
+                  .ref(`images/${selector}/${fileName}.jpg`)
                   .getDownloadURL()
                   .then(url => url);
-              };
 
-              if (selector === "descrip") {
-                await saveTheImg(selector);
-              }
+                elemTexts["title"] = fileName;
+              };
               await saveTheImg(selector);
             }
             elemTexts[selector] = result;
@@ -122,7 +128,7 @@ module.exports = app => {
           const db = firebase.firestore();
           await db
             .collection("products")
-            .doc()
+            .doc(elemTexts["title"])
             .set({
               ...elemTexts,
             })
