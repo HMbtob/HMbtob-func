@@ -126,6 +126,7 @@ module.exports = app => {
           elemTexts["imgUrl"] = await page.url();
 
           const db = firebase.firestore();
+          console.log(elemTexts);
           await db
             .collection("products")
             .doc(elemTexts["title"])

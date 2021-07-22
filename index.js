@@ -28,7 +28,8 @@ exports.userCreate = functions.auth.user().onCreate((user, context) => {
       uid: user.uid,
       photoURL: user.photoURL,
       phoneNumber: user.phoneNumber,
-      type: "none",
+      type: "customer",
+      dcRates: { beauty: 0, cd: 0, dvd: 0, goods: 0, limited: 0, per: 0 },
     })
     .then(writeResult => {
       console.log("User Created result:", writeResult);
