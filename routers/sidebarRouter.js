@@ -5,7 +5,7 @@ module.exports = app => {
 
   //   사이드바 빅커머스 오더 카운츠
   router.get("/sidebarMenu", (req, res) => {
-    console.log("hi");
+    console.log("hisdasd");
     async function callOrdersApi() {
       await axios
         .get("https://api.bigcommerce.com/stores/7uw7zc08qw/v2/orders/count", {
@@ -39,6 +39,7 @@ module.exports = app => {
         })
         .then(order => {
           const status = { order };
+          console.log(order);
           res.send(status.order.data);
         })
         .catch(error => console.log(error));
