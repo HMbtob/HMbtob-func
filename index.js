@@ -89,6 +89,99 @@ exports.userCreate = functions.auth.user().onCreate((user, context) => {
   admin.firestore().collection("rooms").doc().set({
     userName: user.email,
   });
+  admin
+    .firestore()
+    .collection("accounts")
+    .doc(user.email)
+    .collection("addresses")
+    .doc("defaultAddress")
+    .set({
+      name: "Default Address",
+      paymentMethod: "",
+      shippingType: "",
+      recipient: "",
+      recipientPhoneNumber: "",
+      recipientEmail: "",
+      street: "",
+      city: "",
+      states: "",
+      country: "",
+      zipcode: "",
+    });
+  admin
+    .firestore()
+    .collection("accounts")
+    .doc(user.email)
+    .collection("addresses")
+    .doc("#1")
+    .set({
+      name: "# 1",
+      paymentMethod: "",
+      shippingType: "",
+      recipient: "",
+      recipientPhoneNumber: "",
+      recipientEmail: "",
+      street: "",
+      city: "",
+      states: "",
+      country: "",
+      zipcode: "",
+    });
+  admin
+    .firestore()
+    .collection("accounts")
+    .doc(user.email)
+    .collection("addresses")
+    .doc("#2")
+    .set({
+      name: "# 2",
+      paymentMethod: "",
+      shippingType: "",
+      recipient: "",
+      recipientPhoneNumber: "",
+      recipientEmail: "",
+      street: "",
+      city: "",
+      states: "",
+      country: "",
+      zipcode: "",
+    });
+  admin
+    .firestore()
+    .collection("accounts")
+    .doc(user.email)
+    .collection("addresses")
+    .doc("#3")
+    .set({
+      name: "# 3",
+      paymentMethod: "",
+      shippingType: "",
+      recipient: "",
+      recipientPhoneNumber: "",
+      recipientEmail: "",
+      street: "",
+      city: "",
+      states: "",
+      country: "",
+      zipcode: "",
+    });
+  admin
+    .firestore()
+    .collection("accounts")
+    .doc(user.email)
+    .collection("addresses")
+    .doc("shipToKorea")
+    .set({
+      name: "Ship To Korea",
+      paymentMethod: "",
+      shippingType: "",
+      recipient: "",
+      recipientPhoneNumber: "",
+      recipientEmail: "",
+      address: "",
+      detailAddress: "",
+      zipcode: "",
+    });
 });
 
 exports.app = functions.https.onRequest(app);

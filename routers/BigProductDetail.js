@@ -111,6 +111,26 @@ module.exports = app => {
     };
     callFixPrice();
   });
+  //빅커머스 상품 옵션별 재고량 + 가격수정
+  router.get(
+    "/fixproductinventoryprice/:pro_id/:var_id/:qty/:price",
+    (req, res) => {
+      axios
+        .put(
+          `https://api.bigcommerce.com/stores/7uw7zc08qw/v3/catalog/products/${req.params.pro_id}/variants/${req.params.var_id}`,
+          { inventory_level: req.params.qty, price: req.params.price },
+          {
+            headers: {
+              accept: "application/json",
+              "content-type": "application/json",
+              "x-auth-token": "23t2vx6zwiq32xa8b0uspfo7mb7181x",
+            },
+          }
+        )
+        .then(re => res.send(re.data))
+        .catch(e => res.send(e));
+    }
+  );
 
   // 1.모든 상태 카운트 가져오기
   // 2. 각 상태별 카운트/250 해서 반복문 횟수 정하고
@@ -319,47 +339,11 @@ module.exports = app => {
       .catch(error => console.log(error));
   });
 
-  // ㅅㅏㅇ푸ㅁ등록
-  router.get("/addproduct", (req, res) => {
-    console.log("요청 실행");
-    // console.log(req.query.custom_fields_name);
-    // console.log(req.query.custom_fields_Value);
-
-    if (req.query) {
-      console.log("request", req.query);
-    }
-    // if (req.query.image_url) {
-    //   console.log(req.query.image_url);
-    // }
+  // 상품 옵션 불러오기
+  router.get("/productoptions/:id", (req, res) => {
     axios
-      .post(
-        `https://api.bigcommerce.com/stores/7uw7zc08qw/v3/catalog/products`,
-        {
-          name: req.query.name,
-          price: req.query.price,
-          weight: req.query.weight,
-          type: req.query.type,
-          custom_fields: [
-            {
-              name: req.query.custom_fields_name,
-              value: req.query.custom_fields_Value,
-            },
-          ],
-
-          images: [
-            {
-              is_thumbnail: req.query.is_thumbnail,
-              image_url: req.query.image_url,
-            },
-          ],
-          sku: req.query.sku,
-          upc: req.query.upc,
-          inventory_tracking: req.query.inventory_tracking,
-          inventory_level: req.query.inventory_level,
-          brand_name: req.query.brand_name,
-          categories: req.query.categories,
-          description: req.query.description,
-        },
+      .get(
+        `https://api.bigcommerce.com/stores/7uw7zc08qw/v3/catalog/products/${req.params.id}/variants`,
         {
           headers: {
             "x-auth-token": "23t2vx6zwiq32xa8b0uspfo7mb7181x",
@@ -368,34 +352,87 @@ module.exports = app => {
           },
         }
       )
-      .then(response => {
-        console.log("then");
-        // console.log("response", response);
-        console.log("response.data", response.data);
-        res.send(response.data.data);
-      })
-      .catch(error => {
-        console.log("catch");
-        if (error.response) {
-          // 요청이 이루어졌으며 서버가 2xx의 범위를 벗어나는 상태 코드로 응답했습니다.
-          console.log("error.response");
-          console.log("error.response.data", error.response.data);
-          console.log("error.response.status", error.response.status);
-          console.log("error.response.headers", error.response.headers);
-          return res.send(error.response.data);
-        } else if (error.request) {
-          // 요청이 이루어 졌으나 응답을 받지 못했습니다.
-          // `error.request`는 브라우저의 XMLHttpRequest 인스턴스 또는
-          // Node.js의 http.ClientRequest 인스턴스입니다.
-          console.log("error.request", error.request);
-          return res.send(error.request);
-        } else {
-          // 오류를 발생시킨 요청을 설정하는 중에 문제가 발생했습니다.
-          console.log("error.message", error.message);
-          res.send();
-        }
-        console.log("error.config", error.config);
-      });
+      .then(data => res.send(data.data.data))
+      .catch(e => console.log(e));
+  });
+
+  // ㅅㅏㅇ푸ㅁ등록
+  router.post("/addproduct", (req, res) => {
+    console.log("요청 실행");
+    // console.log(req.query.custom_fields_name);
+    // console.log(req.query.custom_fields_Value);
+
+    if (req.body) {
+      console.log("req.body", req.body);
+    }
+
+    if (req.body)
+      axios
+        .post(
+          `https://api.bigcommerce.com/stores/7uw7zc08qw/v3/catalog/products`,
+          {
+            name: req.body.name,
+            price: req.body.price,
+            weight: req.body.weight,
+            type: req.body.type,
+            custom_fields: [
+              {
+                name: req.body.custom_fields_name,
+                value: req.body.custom_fields_Value,
+              },
+            ],
+
+            images: [
+              {
+                is_thumbnail: req.body.is_thumbnail,
+                image_url: req.body.image_url,
+              },
+            ],
+            sku: req.body.sku,
+            upc: req.body.upc,
+            inventory_tracking: req.body.inventory_tracking,
+            inventory_level: req.body.inventory_level,
+            brand_name: req.body.brand_name,
+            categories: req.body.categories,
+            description: req.body.description,
+            variants: req.body.variants,
+          },
+          {
+            headers: {
+              "x-auth-token": "23t2vx6zwiq32xa8b0uspfo7mb7181x",
+              accept: "application/json",
+              "content-type": "application/json",
+            },
+          }
+        )
+        .then(response => {
+          console.log("then");
+          // console.log("response", response);
+          console.log("response.data", response.data);
+          res.send(response.data.data);
+        })
+        .catch(error => {
+          console.log("catch");
+          if (error.response) {
+            // 요청이 이루어졌으며 서버가 2xx의 범위를 벗어나는 상태 코드로 응답했습니다.
+            console.log("error.response");
+            console.log("error.response.data", error.response.data);
+            console.log("error.response.status", error.response.status);
+            console.log("error.response.headers", error.response.headers);
+            return res.send(error.response.data);
+          } else if (error.request) {
+            // 요청이 이루어 졌으나 응답을 받지 못했습니다.
+            // `error.request`는 브라우저의 XMLHttpRequest 인스턴스 또는
+            // Node.js의 http.ClientRequest 인스턴스입니다.
+            console.log("error.request", error.request);
+            return res.send(error.request);
+          } else {
+            // 오류를 발생시킨 요청을 설정하는 중에 문제가 발생했습니다.
+            console.log("error.message", error.message);
+            res.send();
+          }
+          console.log("error.config", error.config);
+        });
   });
 
   return router;
