@@ -1,6 +1,6 @@
 const { Router } = require("express");
 
-module.exports = app => {
+module.exports = (app) => {
   const express = require("express");
   const router = express.Router();
   // const cors = require("cors");
@@ -38,12 +38,12 @@ module.exports = app => {
             },
           }
         )
-        .then(order => {
+        .then((order) => {
           const data = order.data;
-          data.data.map(doc => allProducts.push(doc));
+          data.data.map((doc) => allProducts.push(doc));
           console.log(i);
         })
-        .catch(error => (console.log(error), res.send("e")));
+        .catch((error) => (console.log(error), res.send("e")));
     }
     res.send(allProducts);
   });
@@ -61,11 +61,11 @@ module.exports = app => {
           },
         }
       )
-      .then(product => {
+      .then((product) => {
         const pro = product.data;
         res.send(pro);
       })
-      .catch(error => (console.log(error), res.send("e")));
+      .catch((error) => (console.log(error), res.send("e")));
   });
 
   // 빅커머스 상품 재고량 수정
@@ -85,7 +85,7 @@ module.exports = app => {
           }
         )
         .then(() => res.send("done"))
-        .catch(e => res.send(e));
+        .catch((e) => res.send(e));
     };
     callFix();
   });
@@ -107,7 +107,7 @@ module.exports = app => {
           }
         )
         .then(() => res.send("done"))
-        .catch(e => res.send(e));
+        .catch((e) => res.send(e));
     };
     callFixPrice();
   });
@@ -127,10 +127,28 @@ module.exports = app => {
             },
           }
         )
-        .then(re => res.send(re.data))
-        .catch(e => res.send(e));
+        .then((re) => res.send(re.data))
+        .catch((e) => res.send(e));
     }
   );
+
+  //빅커머스 상품 옵션별 재고량 + 가격수정
+  router.post("/fixproducttitle/", (req, res) => {
+    axios
+      .put(
+        `https://api.bigcommerce.com/stores/7uw7zc08qw/v3/catalog/products/${req.body.id}`,
+        { name: req.body.name },
+        {
+          headers: {
+            accept: "application/json",
+            "content-type": "application/json",
+            "x-auth-token": "23t2vx6zwiq32xa8b0uspfo7mb7181x",
+          },
+        }
+      )
+      .then((re) => res.send(re.data))
+      .catch((e) => res.send(e));
+  });
 
   // 1.모든 상태 카운트 가져오기
   // 2. 각 상태별 카운트/250 해서 반복문 횟수 정하고
@@ -228,7 +246,7 @@ module.exports = app => {
         //이미지 주소 result.img를 요청
         responseType: "arraybuffer", //buffer가 연속적으로 들어있는 자료 구조를 받아온다
       })
-      .then(resp => {
+      .then((resp) => {
         storage
           .ref(
             `images/thumbNail/${
@@ -244,12 +262,12 @@ module.exports = app => {
                 }.jpg`
               )
               .getDownloadURL()
-              .then(url => res.send(url))
-              .catch(e => res.send(e))
+              .then((url) => res.send(url))
+              .catch((e) => res.send(e))
           )
-          .catch(e => res.send(e));
+          .catch((e) => res.send(e));
       })
-      .catch(e => res.send(e));
+      .catch((e) => res.send(e));
   });
   router.get("/getdesc", (req, res) => {
     axios
@@ -257,7 +275,7 @@ module.exports = app => {
         //이미지 주소 result.img를 요청
         responseType: "arraybuffer", //buffer가 연속적으로 들어있는 자료 구조를 받아온다
       })
-      .then(resp => {
+      .then((resp) => {
         storage
           .ref(
             `images/descrip/${
@@ -273,12 +291,12 @@ module.exports = app => {
                 }.jpg`
               )
               .getDownloadURL()
-              .then(url => res.send(url))
-              .catch(e => res.send(e))
+              .then((url) => res.send(url))
+              .catch((e) => res.send(e))
           )
-          .catch(e => res.send(e));
+          .catch((e) => res.send(e));
       })
-      .catch(e => res.send(e));
+      .catch((e) => res.send(e));
   });
 
   // 빅커머스 카테고리 가져오기
@@ -294,10 +312,10 @@ module.exports = app => {
           },
         }
       )
-      .then(cats => {
+      .then((cats) => {
         res.send(cats.data);
       })
-      .catch(error => console.log(error));
+      .catch((error) => console.log(error));
   });
   // 빅커머스 상품등록 위한 등록되있는 마지막 상품번호 가져오기
   router.get("/getlastproductid", (req, res) => {
@@ -313,10 +331,10 @@ module.exports = app => {
           },
         }
       )
-      .then(id => {
+      .then((id) => {
         res.send(id.data);
       })
-      .catch(error => console.log(error));
+      .catch((error) => console.log(error));
   });
 
   // 상품 보이게/안보이게
@@ -333,10 +351,10 @@ module.exports = app => {
           },
         }
       )
-      .then(id => {
+      .then((id) => {
         res.send(id.data);
       })
-      .catch(error => console.log(error));
+      .catch((error) => console.log(error));
   });
 
   // 상품 옵션 불러오기
@@ -352,8 +370,8 @@ module.exports = app => {
           },
         }
       )
-      .then(data => res.send(data.data.data))
-      .catch(e => console.log(e));
+      .then((data) => res.send(data.data.data))
+      .catch((e) => console.log(e));
   });
 
   // ㅅㅏㅇ푸ㅁ등록
@@ -405,13 +423,13 @@ module.exports = app => {
             },
           }
         )
-        .then(response => {
+        .then((response) => {
           console.log("then");
           // console.log("response", response);
           console.log("response.data", response.data);
           res.send(response.data.data);
         })
-        .catch(error => {
+        .catch((error) => {
           console.log("catch");
           if (error.response) {
             // 요청이 이루어졌으며 서버가 2xx의 범위를 벗어나는 상태 코드로 응답했습니다.
